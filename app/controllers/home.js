@@ -44,7 +44,6 @@ module.exports = function(app) {
         }
 
         var SysUsersDAO = new app.models.SysUsersDAO(app.get('dbConnection'));
-
 	    SysUsersDAO.searchByUserName(sysuser.username, function(err, results){
 	    	if (err) {
 	    		return next(err);
