@@ -1,20 +1,35 @@
 var mysql = require('mysql');
 
 function createDBConnection() {
-	if (!process.env.NODE_ENV) {
-		return mysql.createConnection({
-		    host: 'localhost',
-		    user: 'root',
-		    password: 'H@ckingB33s',
-		    database: 'chaosdb'
+
+	switch(process.env.NODE_ENV) {
+    case 'test':
+		return mysql.createPool({
+			connectionLimit : 10,
+			host: 'localhost',
+			user: 'root',
+			password: 'H@ckingB33s',
+			database: 'chaosdb_test'
 		});
-	}
-	if (process.env.NODE_ENV == 'test') {
-		return mysql.createConnection({
-		    host: 'localhost',
-		    user: 'root',
-		    password: 'H@ckingB33s',
-		    database: 'chaosdb_test'
+        break;
+	case 'production':
+		var connectString = process.env.CLEARDB_DATABASE_URL;
+		var connectParms = connectString.match(/mysql:\/\/(.*):(.*)@(.*)\/(.*)\?reconnect=true/);
+		return mysql.createPool({
+			connectionLimit : 10,
+			host: connectParms[3],
+			user: connectParms[1],
+			password: connectParms[2],
+			database: connectParms[4]
+		});
+        break;
+    default:
+		return mysql.createPool({
+			connectionLimit : 10,
+			host: 'localhost',
+			user: 'root',
+			password: 'H@ckingB33s',
+			database: 'chaosdb'
 		});
 	}
 }

@@ -1,4 +1,3 @@
-var bcrypt = require('bcrypt');
 module.exports = function(app) {
     app.get('/', function (req,res,next) {
         if (req.session.authenticated == true) {
@@ -44,14 +43,13 @@ module.exports = function(app) {
             return;
         }
 
-        var connection = app.drivers.connectionFactory();
-        var SysUsersDAO = new app.models.SysUsersDAO(connection);
+        var SysUsersDAO = new app.models.SysUsersDAO(app.get('connection'));
 
 	    SysUsersDAO.searchByUserName(sysuser.username, function(err, results){
 	    	if (err) {
 	    		return next(err);
 	    	}
-            if (bcrypt.compareSync(sysuser.password, results[0].password)) {
+            if (app.get('bcrypt').compareSync(sysuser.password, results[0].password)) {
                 req.session.authenticated = true;
                 res.status(200).redirect('/home');
             } else {

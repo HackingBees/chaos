@@ -3,8 +3,7 @@ module.exports = function(app) {
         if (req.session.authenticated != true) {
             res.redirect('/login');
         }
-     	var connection = app.drivers.connectionFactory();
-     	var SysTenantsDAO = new app.models.SysTenantsDAO(connection);
+     	var SysTenantsDAO = new app.models.SysTenantsDAO(app.get('connection'));
 
 	    SysTenantsDAO.list(function(err, results){
 	    	if (err) {
@@ -51,8 +50,7 @@ module.exports = function(app) {
      		return;
      	}
 
-     	var connection = app.drivers.connectionFactory();
-     	var SysTenantsDAO = new app.models.SysTenantsDAO(connection);
+     	var SysTenantsDAO = new app.models.SysTenantsDAO(app.get('connection'));
 
 	    SysTenantsDAO.add(systenant, function(err, results){
 	    	if (err) {

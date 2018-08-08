@@ -1,12 +1,9 @@
-var bcrypt = require('bcrypt');
-
 module.exports = function(app) {
     app.get('/sysusers', function (req,res,next) {
         if (req.session.authenticated != true) {
             res.redirect('/login');
         }
-     	var connection = app.drivers.connectionFactory();
-     	var SysUsersDAO = new app.models.SysUsersDAO(connection);
+     	var SysUsersDAO = new app.models.SysUsersDAO(app.get('connection'));
 
 	    SysUsersDAO.list(function(err, results){
 	    	if (err) {
@@ -63,10 +60,9 @@ module.exports = function(app) {
         } else {
             sysuser.active = false;
         }
-        sysuser.password = bcrypt.hashSync(sysuser.password, 10);
+        sysuser.password = app.get('bcrypt').hashSync(sysuser.password, 10);
 
-     	var connection = app.drivers.connectionFactory();
-     	var SysUsersDAO = new app.models.SysUsersDAO(connection);
+     	var SysUsersDAO = new app.models.SysUsersDAO(app.get('connection'));
 
 	    SysUsersDAO.add(sysuser, function(err, results){
 	    	if (err) {
