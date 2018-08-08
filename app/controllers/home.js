@@ -43,7 +43,7 @@ module.exports = function(app) {
             return;
         }
 
-        var SysUsersDAO = new app.models.SysUsersDAO(app.get('connection'));
+        var SysUsersDAO = new app.models.SysUsersDAO(app.get('dbConnection'));
 
 	    SysUsersDAO.searchByUserName(sysuser.username, function(err, results){
 	    	if (err) {

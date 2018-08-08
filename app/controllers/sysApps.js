@@ -3,7 +3,7 @@ module.exports = function(app) {
         if (req.session.authenticated != true) {
             res.redirect('/login');
         }
-     	var SysAppsDAO = new app.models.SysAppsDAO(app.get('connection'));
+     	var SysAppsDAO = new app.models.SysAppsDAO(app.get('dbConnection'));
 
 	    SysAppsDAO.list(function(err, results){
 	    	if (err) {
@@ -19,7 +19,6 @@ module.exports = function(app) {
 	    	});
 
 	    });
-      	connection.end();
     });
 
 	app.get('/sysapps/newSysApp', function (req,res) {
@@ -59,7 +58,7 @@ module.exports = function(app) {
             sysapp.active = false;
         }
 
-     	var SysAppsDAO = new app.models.SysAppsDAO(app.get('connection'));
+     	var SysAppsDAO = new app.models.SysAppsDAO(app.get('dbConnection'));
 
 	    SysAppsDAO.add(sysapp, function(err, results){
 	    	if (err) {

@@ -9,7 +9,7 @@ if (!process.env.NODE_ENV) {
 }
 
 var dbConnection = app.drivers.connectionFactory();
-app.set('connection',dbConnection);
+app.set('dbConnection',dbConnection);
 
 const server = app.listen(portNumber, function () {
   var now = new Date();

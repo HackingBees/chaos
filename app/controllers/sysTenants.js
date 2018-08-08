@@ -3,7 +3,7 @@ module.exports = function(app) {
         if (req.session.authenticated != true) {
             res.redirect('/login');
         }
-     	var SysTenantsDAO = new app.models.SysTenantsDAO(app.get('connection'));
+     	var SysTenantsDAO = new app.models.SysTenantsDAO(app.get('dbConnection'));
 
 	    SysTenantsDAO.list(function(err, results){
 	    	if (err) {
@@ -19,7 +19,6 @@ module.exports = function(app) {
 	    	});
 
 	    });
-      	connection.end();
     });
 
 	app.get('/systenants/newSysTenant', function (req,res) {
@@ -50,7 +49,7 @@ module.exports = function(app) {
      		return;
      	}
 
-     	var SysTenantsDAO = new app.models.SysTenantsDAO(app.get('connection'));
+     	var SysTenantsDAO = new app.models.SysTenantsDAO(app.get('dbConnection'));
 
 	    SysTenantsDAO.add(systenant, function(err, results){
 	    	if (err) {

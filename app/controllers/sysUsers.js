@@ -3,7 +3,7 @@ module.exports = function(app) {
         if (req.session.authenticated != true) {
             res.redirect('/login');
         }
-     	var SysUsersDAO = new app.models.SysUsersDAO(app.get('connection'));
+     	var SysUsersDAO = new app.models.SysUsersDAO(app.get('dbConnection'));
 
 	    SysUsersDAO.list(function(err, results){
 	    	if (err) {
@@ -19,7 +19,6 @@ module.exports = function(app) {
 	    	});
 
 	    });
-      	connection.end();
     });
 
 	app.get('/sysusers/newSysUser', function (req,res) {
@@ -62,7 +61,7 @@ module.exports = function(app) {
         }
         sysuser.password = app.get('bcrypt').hashSync(sysuser.password, 10);
 
-     	var SysUsersDAO = new app.models.SysUsersDAO(app.get('connection'));
+     	var SysUsersDAO = new app.models.SysUsersDAO(app.get('dbConnection'));
 
 	    SysUsersDAO.add(sysuser, function(err, results){
 	    	if (err) {
