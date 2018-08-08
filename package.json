@@ -3,9 +3,13 @@
   "version": "1.0.0",
   "description": "Order shall rise from Chaos",
   "main": "chaos.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "engines": {
+      "node": "10.8.0"
   },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node chaos"
+ },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/HackingBees/chaos.git"
