@@ -53,32 +53,33 @@
                     </div>
         		<%}%>
         	</div>
-
-            <div class="card-deck">
-                <div class="card  mb-3 border-primary" style="width: 18rem;">
-                    <div class="card-body">
-                        <h5 class="card-title"><em>New Application</em></h5>
-                        <p class="card-text"><em>Click to Create a new Application</em></p>
-                        <p class="card-text"><small class="text-muted"><em>Click to create</em></small></p>
-                        <div class="card-footer bg-transparent border-primary">
-                            <a href="/sysapps/newSysApp" class="card-link" data-toggle="modal" data-target="#exampleModal">Create</a>
-                        </div>
-                    </div>
-                </div>
-                <% for (i=0;i<list.length;i++) {%>
-                    <% var cardClass=""; if (list[i].active) { cardClass = "success"; cardStatus="Active" } else { cardClass = "secondary", cardStatus="Inactive"} %>
-                    <div class="card  mb-3 border-<%=cardClass%>" style="width: 18rem;">
-                        <div class="card-body text-<%=cardClass%>">
-                            <h5 class="card-title"><%=list[i].name%></h5>
-                            <p class="card-text"><%=list[i].description%></p>
-                            <p class="card-text"><small class="text-muted">ID: <%=list[i].id%>, <em><%=cardStatus%></em></small></p>
-                            <div class="card-footer bg-transparent border-<%=cardClass%>">
-                                <a href="#" class="card-link">Details</a>
+            <% var id=0; var name=""; var description=""; var active =false; %>
+            <% list.push({ name: 'New Application', description: 'Click to Create a new Application', id: -1, active: -1}); %>
+            <% const cardsPerRow = 5; %>
+            <% var numDecks = Math.round(list.length/cardsPerRow+0.5); %>
+            <% var k=0; var i=0; var linkURL=""; var linkName=""; var cardClass=""; var cardStatus=""; var cardId=""; %>
+            <% for (var j=0; j < numDecks; j++) { k=0; %>
+                <div class="row">
+                    <% while (k < cardsPerRow) { i = cardsPerRow*j+k; k++; %>
+                        <% if ( i < list.length ) { %>
+                            <% if (list[i].active == -1) { cardId="New"; linkName="Create"; cardClass="primary"; cardStatus="New"; %>
+                            <%} else { cardId=list[i].id; linkName="Details"; %>
+                                <% if (list[i].active == 1) { cardClass = "success"; cardStatus="Active"; } else {cardClass = "dark"; cardStatus="Inactive";} %>
+                            <%}%>
+                            <div class="card col-sm-2 rounded-0 mb-3 bg-light border-<%=cardClass%>">
+                                <div class="card-body px-1">
+                                    <p class="card-title lead font-weight-bold text-<%=cardClass%>"><%=list[i].name%></p>
+                                    <p class="card-text"><%=list[i].description%></p>
+                                </div>
+                                <div class="card-footer border-top-0 bg-light px-1 my-2">
+                                    <p class="card-text"><small>ID: <%=cardId%>, <em><%=cardStatus%></em></small></p>
+                                    <a href="#" class="btn btn-sm btn-<%=cardClass%>" data-toggle="modal" data-target="#exampleModal" data-action="<%=linkName%>" data-id="<%=list[i].id%>" data-name="<%=list[i].name%>" data-description="<%=list[i].description%>" data-active="<%=list[i].active%>"><%=linkName%></a>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                <%}%>
-            </div>
+                        <%}%>
+                    <%}%>
+                </div>
+            <%}%>
             <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
               <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -91,12 +92,16 @@
                   <div class="modal-body">
                       <form action="/sysapps" method="post">
                           <div class="form-group">
+                               <label for="id">Id</label>
+                               <input class="form-control" type="text" name="id" id="id" readonly>
+                           </div>
+                          <div class="form-group">
                 				<label for="name">Name</label>
-                				<input class="form-control" type="text" name="name" id="name" value="<%=sysapp.name%>">
+                				<input class="form-control" type="text" name="name" id="name">
                 			</div>
                           <div class="form-group">
                 				<label for="description">Description</label>
-                				<textarea class="form-control" rows="3" name="description" id="description"><%=sysapp.description%></textarea>
+                				<textarea class="form-control" rows="3" name="description" id="description"></textarea>
                 			</div>
                           <div class="form-group form-check">
                               <input type="checkbox" class="form-check-input" name="active" id="active">
@@ -124,6 +129,28 @@
                     $( ".result" ).html( data );
                 });
             });
+            $('#exampleModal').on('show.bs.modal', function (event) {
+              var button = $(event.relatedTarget);
+              var action = button.data('action');
+              var id = button.data('id');
+              var name = button.data('name');
+              var description = button.data('description');
+              var active = button.data('active');
+              var modal = $(this)
+              if (id != -1) {
+                  modal.find('.modal-title').text('Application: ' + action);
+                  modal.find('#id').val(id);
+                  modal.find('#name').val(name);
+                  modal.find('#description').val(description);
+                  if (active) {
+                      modal.find('#active').prop( "checked", true );
+                  } else {
+                      modal.find('#active').prop( "checked", false );
+                  }
+              } else {
+                  modal.find('#id').val("New");
+              }
+            })
         </script>
     </body>
 </html>

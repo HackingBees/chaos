@@ -54,31 +54,33 @@
         		<%}%>
         	</div>
 
-            <div class="card-deck">
-                <div class="card  mb-3 border-primary" style="width: 18rem;">
-                    <div class="card-body">
-                        <h5 class="card-title"><em>New User</em></h5>
-                        <p class="card-text"><em>Click to Create a new User</em></p>
-                        <p class="card-text"><small class="text-muted"><em>Click to create</em></small></p>
-                        <div class="card-footer bg-transparent border-primary">
-                            <a href="/sysusers/newSysApp" class="card-link" data-toggle="modal" data-target="#exampleModal">Create</a>
-                        </div>
-                    </div>
-                </div>
-                <% for (i=0;i<list.length;i++) {%>
-                    <% var cardClass=""; if (list[i].active) { cardClass = "success"; cardStatus="Active" } else { cardClass = "secondary", cardStatus="Inactive"} %>
-                    <div class="card  mb-3 border-<%=cardClass%>" style="width: 18rem;">
-                        <div class="card-body text-<%=cardClass%>">
-                            <h5 class="card-title"><%=list[i].fullname%></h5>
-                            <p class="card-text"><%=list[i].username%></p>
-                            <p class="card-text"><small class="text-muted">ID: <%=list[i].id%>, <em><%=cardStatus%></em></small></p>
-                            <div class="card-footer bg-transparent border-<%=cardClass%>">
-                                <a href="#" class="card-link">Details</a>
+            <% list.push({ fullname: 'New User', username: 'Click to Create a new User', email: "", id: -1, active: -1}); %>
+            <% const cardsPerRow = 5; %>
+            <% var numDecks = Math.round(list.length/cardsPerRow+0.5); %>
+            <% var k=0; var i=0; var linkName=""; var cardClass=""; var cardStatus=""; var cardId=""; %>
+            <% for (var j=0; j < numDecks; j++) { k=0; %>
+                <div class="row">
+                    <% while (k < cardsPerRow) { i = cardsPerRow*j+k; k++; %>
+                        <% if ( i < list.length ) { %>
+                            <% if (list[i].active == -1) { cardId="New"; linkName="Create"; cardClass="primary"; cardStatus="New"; %>
+                            <%} else { cardId=list[i].id; linkName="Details"; %>
+                                <% if (list[i].active == 1) { cardClass = "success"; cardStatus="Active"; } else {cardClass = "dark"; cardStatus="Inactive";} %>
+                            <%}%>
+                            <div class="card col-sm-2 rounded-0 mb-3 bg-light border-<%=cardClass%>">
+                                <div class="card-body px-1">
+                                    <p class="card-title lead font-weight-bold text-<%=cardClass%>"><%=list[i].fullname%></p>
+                                    <p class="card-text"><%=list[i].username%></p>
+                                </div>
+                                <div class="card-footer border-top-0 bg-light px-1 my-2">
+                                    <p class="card-text"><small>ID: <%=cardId%>, <em><%=cardStatus%></em></small></p>
+                                    <a href="#" class="btn btn-sm btn-<%=cardClass%>" data-toggle="modal" data-target="#exampleModal" data-action="<%=linkName%>" data-id="<%=list[i].id%>" data-username="<%=list[i].username%>" data-fullname="<%=list[i].fullname%>" data-email="<%=list[i].email%>" data-active="<%=list[i].active%>"><%=linkName%></a>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                <%}%>
-            </div>
+                        <%}%>
+                    <%}%>
+                </div>
+            <%}%>
+
             <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
               <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -91,16 +93,20 @@
                   <div class="modal-body">
                       <form action="/sysusers" method="post">
                           <div class="form-group">
+                               <label for="id">Id</label>
+                               <input class="form-control" type="text" name="id" id="id" readonly>
+                           </div>
+                          <div class="form-group">
                 				<label for="fullname">Full Name</label>
-                				<input class="form-control" type="text" name="fullname" id="fullname" value="<%=sysuser.fullname%>">
+                				<input class="form-control" type="text" name="fullname" id="fullname">
                 		  </div>
                           <div class="form-group">
                 				<label for="username">User Name</label>
-                				<input class="form-control" type="email" name="username" id="username" value="<%=sysuser.username%>">
+                				<input class="form-control" type="email" name="username" id="username">
                 		  </div>
                           <div class="form-group">
                 				<label for="email">Email</label>
-                				<input class="form-control" type="email" name="email" id="email" value="<%=sysuser.email%>">
+                				<input class="form-control" type="email" name="email" id="email">
                 		  </div>
                           <div class="form-group">
                 				<label for="password">Password</label>
@@ -137,6 +143,32 @@
                     $( ".result" ).html( data );
                 });
             });
+            $('#exampleModal').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget);
+                var action = button.data('action');
+                var id = button.data('id');
+                var fullname = button.data('fullname');
+                var username = button.data('username');
+                var active = button.data('active');
+                var email = button.data('email');
+                var modal = $(this)
+                if (id != -1) {
+                    modal.find('.modal-title').text('User: ' + action);
+                    modal.find('#id').val(id);
+                    modal.find('#fullname').val(fullname);
+                    modal.find('#username').val(username);
+                    modal.find('#username').prop("readonly", true);
+                    modal.find('#email').val(email);
+                    modal.find('#password').val("");
+                    if (active) {
+                        modal.find('#active').prop( "checked", true );
+                    } else {
+                        modal.find('#active').prop( "checked", false );
+                    }
+                } else {
+                    modal.find('#id').val("New");
+                }
+            })
         </script>
     </body>
 </html>

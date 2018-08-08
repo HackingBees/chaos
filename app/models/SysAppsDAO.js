@@ -23,8 +23,21 @@ SysAppsDAO.prototype.removeByExpression = function(expression, callback) {
 }
 
 SysAppsDAO.prototype.updateById = function(id, sysapp, callback) {
-  var update = "UPDATE sys_apps SET `name`=?, `description`=?, `active`=? WHERE `id`=?";
-	this._connection.query(update, sysapp.name, sysapp.description, sysapp.active, id, callback);
+	var update = "UPDATE sys_apps SET ";
+	Object.keys(sysapp).forEach(function(key) {
+	  var val = sysapp[key];
+	  if (key != "id") {
+		  if (isNaN(val)) {
+			  update+= "`"+key+"`='"+val+"', ";
+		  } else {
+			  update+= "`"+key+"`="+val+", ";
+		  }
+	  }
+	});
+	// remove last comma
+	update = update.substring(0, update.length-2);
+	update += " WHERE `id`=?";
+	this._connection.query(update, id, callback);
 }
 
 SysAppsDAO.prototype.truncate = function(callback) {

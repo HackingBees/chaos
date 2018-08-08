@@ -48,15 +48,22 @@ module.exports = function(app) {
 	    	});
      		return;
      	}
-
      	var SysTenantsDAO = new app.models.SysTenantsDAO(app.get('dbConnection'));
-
-	    SysTenantsDAO.add(systenant, function(err, results){
-	    	if (err) {
-	    		return next(err);
-	    	}
-	    	res.redirect('/systenants');
-	    });
+        if (systenant.id == "New") {
+    	    SysTenantsDAO.add(systenant, function(err, results){
+    	    	if (err) {
+    	    		return next(err);
+    	    	}
+    	    	res.redirect('/systenants');
+    	    });
+        } else {
+            SysTenantsDAO.updateById(systenant.id, systenant, function(err, results){
+    	    	if (err) {
+    	    		return next(err);
+    	    	}
+    	    	res.redirect('/systenants');
+    	    });
+        }
 
 	});
 }

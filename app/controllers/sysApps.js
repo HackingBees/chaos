@@ -58,14 +58,22 @@ module.exports = function(app) {
             sysapp.active = false;
         }
 
-     	var SysAppsDAO = new app.models.SysAppsDAO(app.get('dbConnection'));
-
-	    SysAppsDAO.add(sysapp, function(err, results){
-	    	if (err) {
-	    		return next(err);
-	    	}
-	    	res.redirect('/sysapps');
-	    });
+        var SysAppsDAO = new app.models.SysAppsDAO(app.get('dbConnection'));
+        if (sysapp.id == "New") {
+    	    SysAppsDAO.add(sysapp, function(err, results){
+    	    	if (err) {
+    	    		return next(err);
+    	    	}
+    	    	res.redirect('/sysapps');
+    	    });
+        } else {
+            SysAppsDAO.updateById(sysapp.id, sysapp, function(err, results){
+    	    	if (err) {
+    	    		return next(err);
+    	    	}
+    	    	res.redirect('/sysapps');
+    	    });
+        }
 
 	});
 }

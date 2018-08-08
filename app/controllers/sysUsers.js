@@ -59,16 +59,30 @@ module.exports = function(app) {
         } else {
             sysuser.active = false;
         }
-        sysuser.password = app.get('bcrypt').hashSync(sysuser.password, 10);
+
+        var userEnteredPassword = sysuser.password;
+        sysuser.password = app.get('bcrypt').hashSync(userEnteredPassword, 10);
 
      	var SysUsersDAO = new app.models.SysUsersDAO(app.get('dbConnection'));
 
-	    SysUsersDAO.add(sysuser, function(err, results){
-	    	if (err) {
-	    		return next(err);
-	    	}
-	    	res.redirect('/sysusers');
-	    });
-
+        if (sysuser.id == "New") {
+    	    SysUsersDAO.add(sysuser, function(err, results){
+    	    	if (err) {
+    	    		return next(err);
+    	    	}
+    	    	res.redirect('/sysusers');
+    	    });
+        } else {
+            if (userEnteredPassword=='') {
+                // do not change password
+                delete sysuser.password;
+            }
+            SysUsersDAO.updateById(sysuser.id, sysuser, function(err, results){
+                if (err) {
+                    return next(err);
+                }
+                res.redirect('/sysusers');
+            });
+        }
 	});
 }

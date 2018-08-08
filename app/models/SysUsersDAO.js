@@ -30,8 +30,21 @@ SysUsersDAO.prototype.removeByExpression = function(expression, callback) {
 }
 
 SysUsersDAO.prototype.updateById = function(id, sysuser, callback) {
-  var update = "UPDATE sys_users SET `email`=?, `fullname`=?, `active`=?, `password`=? WHERE `id`=?";
-	this._connection.query(update, sysuser.name, id, callback);
+	var update = "UPDATE sys_users SET ";
+	Object.keys(sysuser).forEach(function(key) {
+	  var val = sysuser[key];
+	  if ((key != "id") && (key != "username")) {
+		  if (isNaN(val)) {
+			  update+= "`"+key+"`='"+val+"', ";
+		  } else {
+			  update+= "`"+key+"`="+val+", ";
+		  }
+	  }
+	});
+	// remove last comma
+	update = update.substring(0, update.length-2);
+	update += " WHERE `id`=?";
+	this._connection.query(update, id, callback);
 }
 
 SysUsersDAO.prototype.truncate = function(callback) {

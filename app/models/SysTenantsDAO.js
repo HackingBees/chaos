@@ -23,8 +23,21 @@ SysTenantsDAO.prototype.removeByExpression = function(expression, callback) {
 }
 
 SysTenantsDAO.prototype.updateById = function(id, systenant, callback) {
-  var update = "UPDATE sys_tenants SET `name`=? WHERE `id`=?";
-	this._connection.query(update, systenant.name, id, callback);
+	var update = "UPDATE sys_tenants SET ";
+	Object.keys(systenant).forEach(function(key) {
+	  var val = systenant[key];
+	  if (key != "id") {
+		  if (isNaN(val)) {
+			  update+= "`"+key+"`='"+val+"', ";
+		  } else {
+			  update+= "`"+key+"`="+val+", ";
+		  }
+	  }
+	});
+	// remove last comma
+	update = update.substring(0, update.length-2);
+	update += " WHERE `id`=?";
+	this._connection.query(update, id, callback);
 }
 
 SysTenantsDAO.prototype.truncate = function(callback) {
