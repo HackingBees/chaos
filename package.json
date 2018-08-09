@@ -4,12 +4,12 @@
   "description": "Order shall rise from Chaos",
   "main": "chaos.js",
   "engines": {
-      "node": "10.8.0"
+    "node": "10.8.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node chaos"
- },
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/HackingBees/chaos.git"
@@ -26,10 +26,11 @@
     "consign": "^0.1.6",
     "ejs": "^2.6.1",
     "express": "^4.16.3",
-    "express-mysql-session": "^2.0.0",
+    "express-mysql-session": "^2.0.1",
     "express-session": "^1.15.6",
     "express-validator": "^5.3.0",
-    "my-sql": "^1.2.15"
+    "my-sql": "^1.2.15",
+    "mysql": "^2.16.0"
   },
   "devDependencies": {
     "mocha": "^5.2.0",

@@ -1,21 +1,11 @@
 var app = require('./app/config/config')();
+var settings = app.get('settings');
 
-var portNumber = process.env.PORT || 8080;
-
-if (!process.env.NODE_ENV) {
-    var env="dev";
-} else {
-    var env=process.env.NODE_ENV;
-}
-
-var dbConnection = app.drivers.connectionFactory();
-app.set('dbConnection',dbConnection);
-
-const server = app.listen(portNumber, function () {
+const server = app.listen(settings.env.portNumber, function () {
   var now = new Date();
-  console.log('Chaos Platform is up in ' + env + ' environment.');
-  console.log('== Chaos is listening on port '+portNumber+'. ');
-  console.log('== '+now);
+  console.log('Chaos Platform is up in ' + settings.env.type + ' environment.');
+  console.log('== Chaos is listening on port ' + settings.env.portNumber + '. ');
+  console.log('== ' + now);
 
   createAdminUser();
 
@@ -40,7 +30,7 @@ server.on('connection', connection => {
 function shutDown() {
     console.log('Chaos Received kill signal, shutting down gracefully');
     console.log('==Closing DB Pool.');
-    dbConnection.end(function (err) {
+    app.get('dbConnection').end(function (err) {
         if (err) {
             return next(err);
         }
@@ -69,21 +59,22 @@ function createAdminUser(){
       }
       if (results.length == 0) {
           console.log("==== Admin user not found. Creating Admin user");
-          var adminPassword = app.get('bcrypt').hashSync("admin", 10);
-          var sysuser = { fullname: 'HackingBees Admin',
-                          username: 'admin@hackingbees.tech',
-                          email: 'admin@hackingbees.tech',
+          var adminPassword = app.get('bcrypt').hashSync(settings.adminUser.initialPassword, 10);
+          var sysuser = { fullname: settings.adminUser.fullname,
+                          username: settings.adminUser.username,
+                          email: settings.adminUser.email,
                           password: adminPassword,
-                          active: 0};
+                          active: 1
+                      };
           var SysUsersDAO = new app.models.SysUsersDAO(app.get('dbConnection'));
           SysUsersDAO.add(sysuser, function(err, results){
               if (err) {
                   return next(err);
               }
-              console.log("====== Admin user created");
+              console.log("==== " + settings.adminUser.fullname + " user created uccessfully.");
           });
       } else {
-          console.log("==== Admin user found.");
+          console.log("==== Admin user is " + settings.adminUser.fullname + ".");
           return true;
       }
   });
