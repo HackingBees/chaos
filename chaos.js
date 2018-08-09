@@ -7,7 +7,7 @@ const server = app.listen(settings.env.portNumber, function () {
   console.log('== Chaos is listening on port ' + settings.env.portNumber + '. ');
   console.log('== ' + now);
 
-  createAdminUser();
+  checkAndCreateAdminUser();
 
 });
 
@@ -36,9 +36,11 @@ function shutDown() {
         }
         console.log('==DB Pool closed.');
     });
-    console.log('Closing Server');
+    console.log('==Closing Session Store');
+    app.get('sessionStore').close();
+    console.log('==Closing Server');
     server.close(() => {
-            console.log('Closed out remaining connections');
+            console.log('==Closed out remaining connections');
             process.exit(0);
     });
 
@@ -51,7 +53,7 @@ function shutDown() {
     setTimeout(() => connections.forEach(curr => curr.destroy()), 5000);
 }
 
-function createAdminUser(){
+function checkAndCreateAdminUser(){
     var SysUsersDAO = new app.models.SysUsersDAO(app.get('dbConnection'));
     SysUsersDAO.searchByUserName("admin@hackingbees.tech", function(err, results){
       if (err) {

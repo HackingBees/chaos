@@ -24,6 +24,7 @@ switch(process.env.NODE_ENV) {
                                 user: 'root',
                                 password: 'H@ckingB33s',
                                 database: 'chaosdb_test',
+                                connectionLimit : 10,
                                 port: 3306
                             };
         break;
@@ -35,7 +36,8 @@ switch(process.env.NODE_ENV) {
         settings.dbOptions = {  host: connectParms[3],
                                 user: connectParms[1],
                                 password: connectParms[2],
-                                database: connectParms[4]
+                                database: connectParms[4],
+                                connectionLimit : 10
                             };
         break;
 default:
@@ -43,6 +45,7 @@ default:
                             user: 'root',
                             password: 'H@ckingB33s',
                             database: 'chaosdb',
+                            connectionLimit : 10,
                             port: 3306
                         };
 }

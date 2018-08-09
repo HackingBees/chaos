@@ -20,25 +20,35 @@ module.exports = function() {
 	app.use(bodyParser.json());
 	app.use(expressValidator());
 
-	var sessionStore = new MySQLStore(settings.dbOptions);
-
-	app.use(session({
-        store: sessionStore,
-		key: 'chaos_user_name',
-        secret: settings.env.secret,
-        resave: false,
-        saveUninitialized: true,
-        cookie: settings.env.cookie
-    }));
+	//		store: sessionStore,
 
 	consign({cwd: 'app'})
 		.include('drivers')
-	    .then('models')
+	    .into(app);
+
+	var dbConnection = app.drivers.connectionFactory(settings.dbOptions);
+	/*var sessionStore = new MySQLStore({ createDatabaseTable: true,
+										endConnectionOnClose: true},
+										dbConnection);
+										*/
+	var sessionStore = new MySQLStore({}, dbConnection);
+
+	app.use(session({
+		store:sessionStore,
+		key: 'chaos_user_name',
+        secret: 'ThisIsAReallyBigSecret',
+        resave: true,
+        saveUninitialized: true,
+        cookie: { httpOnly: true, secure: false, maxAge: 604800 }
+    }));
+
+	consign({cwd: 'app'})
+		.include('models')
 	    .then('controllers')
 	    .into(app);
 
-	var dbConnection = app.drivers.connectionFactory();
 	app.set('dbConnection',dbConnection);
+	app.set('sessionStore',sessionStore);
 
 	app.use(function(req,res,next){
 			res.status(404).render('errors/404');

@@ -5,7 +5,6 @@ module.exports = function(app) {
         } else {
             res.redirect('/login');
         }
-
     });
     app.get('/home', function (req,res,next) {
         var sysuser = req.body;
