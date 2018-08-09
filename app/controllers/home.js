@@ -47,11 +47,16 @@ module.exports = function(app) {
 	    	if (err) {
 	    		return next(err);
 	    	}
-            if (app.get('bcrypt').compareSync(sysuser.password, results[0].password)) {
-                req.session.authenticated = true;
-                res.status(200).redirect('/home');
+            if (results[0].active) {
+                if (app.get('bcrypt').compareSync(sysuser.password, results[0].password)) {
+                    req.session.authenticated = true;
+                    res.status(200).redirect('/home');
+                } else {
+                    var message="Invalid login information.";
+                    res.status(401).render('home/login',{message:message, validationErrors:false, sysuser:sysuser});
+                }
             } else {
-                var message="Invalid login information.";
+                var message="User inactive, please contact the Administrator.";
                 res.status(401).render('home/login',{message:message, validationErrors:false, sysuser:sysuser});
             }
 	    });

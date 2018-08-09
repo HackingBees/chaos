@@ -37,7 +37,7 @@ module.exports = function() {
 		store:sessionStore,
 		key: 'chaos_user_name',
         secret: 'ThisIsAReallyBigSecret',
-        resave: true,
+        resave: false,
         saveUninitialized: true,
         cookie: { httpOnly: true, secure: false, maxAge: 604800 }
     }));
