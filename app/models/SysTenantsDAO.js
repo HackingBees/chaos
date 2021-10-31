@@ -2,6 +2,11 @@ function SysTenantsDAO(connection) {
 	this._connection = connection;
 }
 
+SysTenantsDAO.prototype.exists = function(callback) {
+	this._connection.query('SELECT count(*) FROM sys_tenants', callback);
+}
+
+
 SysTenantsDAO.prototype.list = function(callback) {
 	this._connection.query('SELECT * FROM sys_tenants', callback);
 }

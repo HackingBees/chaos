@@ -5,6 +5,7 @@ var expressValidator = require('express-validator');
 var session = require('express-session');
 var bcrypt = require('bcrypt');
 var MySQLStore = require('express-mysql-session')(session);
+var fs = require('fs');
 var settings = require('./settings.js');
 
 module.exports = function() {
@@ -15,6 +16,7 @@ module.exports = function() {
 	app.set('trust proxy', 1);
 	app.set('bcrypt',bcrypt);
 	app.set('settings', settings);
+    app.set('fs', fs);
 	app.use(express.static('./app/public'));
 	app.use(bodyParser.urlencoded({ extended: true }));
 	app.use(bodyParser.json());
@@ -35,8 +37,8 @@ module.exports = function() {
 
 	app.use(session({
 		store:sessionStore,
-		key: 'chaos_user_name',
-        secret: 'ThisIsAReallyBigSecret',
+		key: 'chaos',
+        secret: 'Cha0s@dmin',
         resave: false,
         saveUninitialized: true,
         cookie: { httpOnly: true, secure: false, maxAge: 604800 }

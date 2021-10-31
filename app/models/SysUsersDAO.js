@@ -2,6 +2,10 @@ function SysUsersDAO(connection) {
 	this._connection = connection;
 }
 
+SysUsersDAO.prototype.exists = function(callback) {
+	this._connection.query('SELECT count(*) FROM sys_users', callback);
+}
+
 SysUsersDAO.prototype.list = function(callback) {
 	this._connection.query('SELECT * FROM sys_users', callback);
 }

@@ -2,8 +2,8 @@
 var settings = {};
 settings.dbOptions = {};
 settings.adminUser = {  fullname: 'HackingBees Admin',
-                        username: 'admin@hackingbees.tech',
-                        email: 'admin@hackingbees.tech',
+                        username: 'admin@hackingbees.com',
+                        email: 'admin@hackingbees.com',
                         initialPassword: 'admin',
                     };
 
@@ -42,8 +42,8 @@ switch(process.env.NODE_ENV) {
         break;
 default:
     settings.dbOptions = {  host: 'localhost',
-                            user: 'root',
-                            password: 'H@ckingB33s',
+                            user: 'chaosadmin',
+                            password: 'Cha0s@dmin',
                             database: 'chaosdb',
                             connectionLimit : 10,
                             port: 3306

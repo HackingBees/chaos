@@ -2,6 +2,11 @@ function SysAppsDAO(connection) {
 	this._connection = connection;
 }
 
+SysAppsDAO.prototype.exists = function(callback) {
+	this._connection.query('SELECT count(*) FROM sys_apps', callback);
+}
+
+
 SysAppsDAO.prototype.list = function(callback) {
 	this._connection.query('SELECT * FROM sys_apps', callback);
 }

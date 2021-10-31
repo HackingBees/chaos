@@ -7,6 +7,7 @@ const server = app.listen(settings.env.portNumber, function () {
   console.log('== Chaos is listening on port ' + settings.env.portNumber + '. ');
   console.log('== ' + now);
 
+  checkAndCreateTables();
   checkAndCreateAdminUser();
 
 });
@@ -53,11 +54,29 @@ function shutDown() {
     setTimeout(() => connections.forEach(curr => curr.destroy()), 5000);
 }
 
+function checkAndCreateTables() {
+    var SysUsersDAO = new app.models.SysUsersDAO(app.get('dbConnection'));
+    SysUsersDAO.exists( function(err, results){
+        if (err) createTable('sys_users')
+        else console.log("Table SYS_USERS already exists");
+    });
+    var SysAppsDAO = new app.models.SysAppsDAO(app.get('dbConnection'));
+    SysAppsDAO.exists( function(err, results){
+        if (err) createTable('sys_apps')
+        else console.log("Table SYS_APPS already exists");
+    });
+    var SysTenantsDAO = new app.models.SysTenantsDAO(app.get('dbConnection'));
+    SysTenantsDAO.exists( function(err, results){
+        if (err) createTable('sys_tenants')
+        else console.log("Table SYS_TENANTS already exists");
+    });
+}
+
 function checkAndCreateAdminUser(){
     var SysUsersDAO = new app.models.SysUsersDAO(app.get('dbConnection'));
-    SysUsersDAO.searchByUserName("admin@hackingbees.tech", function(err, results){
+    SysUsersDAO.searchByUserName("admin@hackingbees.com", function(err, results){
       if (err) {
-          return next(err);
+          return err;
       }
       if (results.length == 0) {
           console.log("==== Admin user not found. Creating Admin user");
@@ -80,4 +99,25 @@ function checkAndCreateAdminUser(){
           return true;
       }
   });
+}
+
+function readSQLFile(filename, callback) {
+    var fs = app.get('fs');
+    fs.readFile('db/'+filename, 'utf8', function(err, data) {
+        if (err) {
+            console.log("Error reading File:" + err);
+        }
+        return callback(data);
+    });
+}
+
+function createTable(tablename) {
+    console.log("Will Create "+tablename);
+    readSQLFile(tablename+'.sql', function(createStatement){
+        var dbConnection = app.get('dbConnection');
+        dbConnection.query(createStatement, function (err, results) {
+            if (err) return err;
+            console.log("Table " + tablename + " Created. ");
+        });
+    });
 }
