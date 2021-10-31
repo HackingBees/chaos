@@ -72,7 +72,7 @@ function createTable(tablename) {
         var dbConnection = app.get('dbConnection');
         dbConnection.query(createStatement, function (err, results) {
             if (err) return err;
-            console.log("Table " + tablename + " Created. ");
+            console.log("Table " + tablename + " Created.");
             createDefaultRecord(tablename);
         });
     });
