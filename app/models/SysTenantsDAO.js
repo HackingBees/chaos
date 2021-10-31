@@ -11,6 +11,10 @@ SysTenantsDAO.prototype.list = function(callback) {
 	this._connection.query('SELECT * FROM sys_tenants', callback);
 }
 
+SysTenantsDAO.prototype.searchByName = function(name, callback) {
+	this._connection.query('SELECT * FROM sys_tenants where `name`=? LIMIT 1', name, callback);
+}
+
 SysTenantsDAO.prototype.add = function(systenant, callback) {
 
 	var insert = "INSERT INTO `sys_tenants` (`name`, `schema`, `active`,`deployed`) values ";

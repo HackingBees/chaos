@@ -11,6 +11,10 @@ SysAppsDAO.prototype.list = function(callback) {
 	this._connection.query('SELECT * FROM sys_apps', callback);
 }
 
+SysAppsDAO.prototype.searchByName = function(name, callback) {
+	this._connection.query('SELECT * FROM sys_apps where `name`=? LIMIT 1', name, callback);
+}
+
 SysAppsDAO.prototype.add = function(sysapp, callback) {
 	var insert = "INSERT INTO sys_apps (`name`, `description`, `active`) values ";
 	insert += "('" + sysapp.name + "',";

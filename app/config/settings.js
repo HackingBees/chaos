@@ -6,6 +6,12 @@ settings.adminUser = {  fullname: 'HackingBees Admin',
                         email: 'admin@hackingbees.com',
                         initialPassword: 'admin',
                     };
+settings.defaultTenant = { name: 'Platform Admin Tenant',
+                    };
+settings.defaultApp = { name: 'Chaos Platform',
+                        description: 'From Chaos there shall be Order',
+                        active: 1,
+                    };
 
 
 // Default env settings
