@@ -73,7 +73,7 @@
                                 </div>
                                 <div class="card-footer border-top-0 bg-light px-1 my-2">
                                     <p class="card-text"><small>ID: <%=cardId%>, <em><%=cardStatus%></em></small></p>
-                                    <a href="#" class="btn btn-sm btn-primary" data-target="/sysapps/ data-action="goToApp" data-id="<%=list[i].id%>"/>
+                                    <a href="#" class="btn btn-sm btn-primary" data-target="/sysapps/<%=list[i].id%>" data-action="goToApp" data-id="<%=list[i].id%>"/>
                                     <a href="#" class="btn btn-sm btn-<%=cardClass%>" data-toggle="modal" data-target="#exampleModal" data-action="<%=linkName%>" data-id="<%=list[i].id%>" data-name="<%=list[i].name%>" data-description="<%=list[i].description%>" data-active="<%=list[i].active%>"><%=linkName%></a>
                                 </div>
                             </div>
